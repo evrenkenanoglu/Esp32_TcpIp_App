@@ -1,0 +1,20 @@
+{
+    "project_name":       "bootloader",
+    "project_path":       "C:/ESP32/esp-idf/components/bootloader/subproject",
+    "build_dir":          "C:/ESP32/blink/build/bootloader",
+    "config_file":        "C:/ESP32/blink/sdkconfig",
+    "config_defaults":    "",
+    "app_elf":            "bootloader.elf",
+    "app_bin":            "bootloader.bin",
+    "git_revision":       "v4.2-dev-318-g605da33c3",
+    "target":             "esp32",
+    "phy_data_partition": "",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "xtensa-esp32-elf-",
+    "config_environment" : {
+        "COMPONENT_KCONFIGS" : "C:/ESP32/esp-idf/components/efuse/Kconfig;C:/ESP32/esp-idf/components/esp32/Kconfig;C:/ESP32/esp-idf/components/esp_common/Kconfig;C:/ESP32/esp-idf/components/log/Kconfig;C:/ESP32/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "C:/ESP32/esp-idf/components/bootloader/Kconfig.projbuild;C:/ESP32/esp-idf/components/esptool_py/Kconfig.projbuild;C:/ESP32/esp-idf/components/partition_table/Kconfig.projbuild"
+    },
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_rom", "esptool_py", "log", "main", "micro-ecc", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "C:/ESP32/esp-idf/components/bootloader", "C:/ESP32/esp-idf/components/bootloader_support", "C:/ESP32/esp-idf/components/efuse", "C:/ESP32/esp-idf/components/esp32", "C:/ESP32/esp-idf/components/esp_common", "C:/ESP32/esp-idf/components/esp_rom", "C:/ESP32/esp-idf/components/esptool_py", "C:/ESP32/esp-idf/components/log", "C:/ESP32/esp-idf/components/bootloader/subproject/main", "C:/ESP32/esp-idf/components/bootloader/subproject/components/micro-ecc", "C:/ESP32/esp-idf/components/partition_table", "C:/ESP32/esp-idf/components/soc", "C:/ESP32/esp-idf/components/spi_flash", "C:/ESP32/esp-idf/components/xtensa", "" ]
+}
