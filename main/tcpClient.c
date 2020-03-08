@@ -31,17 +31,16 @@ int8_t tcpClientInit(tsTcpClient *client)
 
 int8_t tcpClientConnect(tsTcpClient *client)
 {
-    
-    if(!(client->socket < 0))
+
+    if (!(client->socket < 0))
     {
         int err = connect(client->socket, (struct sockaddr *)&client->destinationAddress, sizeof(client->destinationAddress));
-        if(err != 0)
+        if (err != 0)
         {
             ESP_LOGE(clientTag, "Socket unable to connect: errno %d", errno);
             return ESP_FAIL;
         }
         ESP_LOGI(clientTag, "Successfully connected");
-        
     }
     else
     {

@@ -43,6 +43,10 @@
         "xstddef": "c",
         "xtr1common": "c",
         "xutility": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "esp_adc_cal.h": "c",
+        "adc_periph.h": "c",
+        "esp_err.h": "c",
+        "device_adc.h": "c"
     }
 }

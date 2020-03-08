@@ -12,7 +12,6 @@
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 #include "freertos/timers.h"
-#include "connectNetwork.h"
 #include "driver/adc.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
@@ -21,26 +20,19 @@
 #include "nvs_flash.h"
 #include "esp_netif.h"
 
-//** ADC Includes **//
-#include "driver/adc.h"
-#include "esp_adc_cal.h"
-//** ADC Includes **//
+#define NUMBER_OF_SAMPLES       50 
+#include "device_adc.h"
+ADC_DEVICE_CREATE(adcNTC, 6, ADC_ATTEN_0db, ADC_WIDTH_10Bit, NUMBER_OF_SAMPLES)
 
+
+#include "connectNetwork.h"
 #include "tcpClient.h"
 #define HOST_IP "192.168.43.1"
 #define PORT 3000
 TCP_CLIENT_CREATE(test, HOST_IP, PORT)
 
 #define TASK_DELAY_TCP_TASK     2000 // ms
-#define TASK_DELAY_ADC          100 // ms
-#define NUMBER_OF_SAMPLES       20
-// #if CONFIG_IDF_TARGET32
-// static esp_adc_cal_characteristics_t *adc_characs;
-// const static adc_channel_t channel = ADC_CHANNEL_6
-// #elif CONFIG_IDF_TARGET_ESP32S2
-// const static adc_channel_t channel = ADC_CHANNEL_6
-// #endif
-// static  ad
+#define TASK_DELAY_ADC          1000 // ms
 
 #define BLINK_GPIO      CONFIG_BLINK_GPIO
 #define BLINK_LED_13    13
@@ -48,15 +40,26 @@ TCP_CLIENT_CREATE(test, HOST_IP, PORT)
 const char *ssid = "EvrenKenanoglu";
 const char *pass = "12345678";
 
+
+
+/****************************************************************************************************
+* 											    FUNCTIONS PROTOTYPE
+*****************************************************************************************************/
 void initialize();
 void sendAdcValue(uint32_t adcValue);
+static void startupDelay(); 
+
+static void adcReadingTask(void *pvParameters);
 static void tcpClientTask(void *pvParameters);
-// static void AdcTask(void *pvParameters);
+/****************************************************************************************************
+* 											    FUNCTIONS PROTOTYPE END
+*****************************************************************************************************/
 
 void app_main(void)
 {
     initialize();
     tcpClientConnect(&test);
+    xTaskCreate(adcReadingTask, "adc_reading", 1024, NULL, 1, NULL );
     xTaskCreate(tcpClientTask, "tcp_client", 4096, NULL, 5, NULL);
     fflush(stdout);
 }
@@ -65,12 +68,16 @@ static void tcpClientTask(void *pvParameters)
 {
     while(1)
     {
-        sendAdcValue(50);
+        sendAdcValue(adcGetRawSampled(&adcNTC));
         vTaskDelay(TASK_DELAY_TCP_TASK / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
 }
 
+static void adcReadingTask(void *pvParameters)
+{
+    
+}
 // static void AdcSamplingTask(void *pvParameters)
 // {
 //     for(int i=0; )
@@ -88,14 +95,21 @@ void initialize()
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    
+
     gpio_pad_select_gpio(BLINK_LED_13);
     gpio_set_direction(BLINK_LED_13, GPIO_MODE_OUTPUT);
 
-    for (int i = 3; i >= 0; i--) {
-        printf("Restarting in %d seconds...\n", i);
+    startupDelay();
+    connectNet(ssid, pass);
+    adcInit(&adcNTC);
+    tcpClientInit(&test);
+}
+
+void startupDelay()
+{
+    for (int i = 3; i >= 0; i--)
+    {
+        printf("Starting in %d seconds...\n", i);
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
-    connectNet(ssid,pass); 
-    tcpClientInit(&test);
 }
