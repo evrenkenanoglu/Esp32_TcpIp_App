@@ -22,12 +22,20 @@ typedef struct
     uint8_t resolution;
     uint8_t numberOfSamples;
     uint32_t sensorResult;
+    uint32_t sensorVoltageResult;
 }tsAdc;
 
-
-extern uint8_t  adcInit(tsAdc *deviceAdc);
-extern uint32_t adcGetRaw(tsAdc *deviceAdc);
+/**
+ * @brief 
+ * 
+ * @param deviceAdc 
+ * @return uint8_t
+ *          - Return OK  
+ */
+extern uint8_t  adcInit         (tsAdc *deviceAdc);
+extern uint32_t adcGetRaw       (tsAdc *deviceAdc);
 extern uint32_t adcGetRawSampled(tsAdc *deviceAdc);
+extern uint32_t adcGetVoltage   (tsAdc *deviceAdc);
 
 /**
  * @brief 
@@ -47,11 +55,12 @@ extern uint32_t adcGetRawSampled(tsAdc *deviceAdc);
  */
 #define ADC_DEVICE_CREATE(_name, _channel, _atten, _resolution, _noOfSamples) \
     tsAdc _name = {                                                           \
-        ADC_CHANNEL_##_channel,                                                             \
+        _channel,                                                             \
         _atten,                                                               \
         _resolution,                                                          \
-        (_noOfSamples == 0) ? 1 : _noSamples,                                 \
+        (_noOfSamples == 0) ? 1 : _noOfSamples,                               \
         0,                                                                    \
+        0,                                                                 \
     };
 
 #endif /* DEVICE_ADC_H_ */

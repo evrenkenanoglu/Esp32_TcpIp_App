@@ -47,6 +47,9 @@
         "esp_adc_cal.h": "c",
         "adc_periph.h": "c",
         "esp_err.h": "c",
-        "device_adc.h": "c"
+        "device_adc.h": "c",
+        "string": "cpp",
+        "xlocnum": "cpp",
+        "stdint.h": "c"
     }
 }

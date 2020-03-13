@@ -1,0 +1,52 @@
+[0;32mI (42448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (42448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (43448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (43448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (44448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (44448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (45448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (45448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (46448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (46448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (47448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (47448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (48448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (48448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (49448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (49448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (50448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (50448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (51448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (51448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (52448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (52448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (53448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (53448) ADC: Value Raw     : 1023
+[0m
+[0;32mI (54448) ADC: Value Sampled : 1023
+[0m
+[0;32mI (54448) ADC: Value Raw     : 1023
+[0m

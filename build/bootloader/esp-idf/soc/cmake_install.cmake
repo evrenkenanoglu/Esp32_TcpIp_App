@@ -34,8 +34,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/ESP32/blink/build/bootloader/esp-idf/soc/src/esp32/cmake_install.cmake")
-  include("C:/ESP32/blink/build/bootloader/esp-idf/soc/soc/cmake_install.cmake")
+  include("C:/ESP32/Esp32_TcpIp_App/build/bootloader/esp-idf/soc/src/esp32/cmake_install.cmake")
+  include("C:/ESP32/Esp32_TcpIp_App/build/bootloader/esp-idf/soc/soc/cmake_install.cmake")
 
 endif()
 

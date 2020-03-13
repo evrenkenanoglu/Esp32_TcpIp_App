@@ -1,4 +1,4 @@
-# Install script for directory: C:/ESP32/blink/main
+# Install script for directory: C:/ESP32/Esp32_TcpIp_App/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

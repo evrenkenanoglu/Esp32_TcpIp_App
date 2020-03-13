@@ -31,12 +31,21 @@
  * @brief params
  * 
  */
+
+typedef enum teSocketStatus
+{
+    eSocketNotCreated=1,
+    eSocketNotConnected,
+    eSocketConnected,
+    eSocketDisconnected,
+}teSocketStatus;
 typedef struct 
 {
     const char *ipAddress;
     const uint32_t port;
     // const char *tag;
     int32_t socket;
+    uint8_t socketStatus; 
     char rx_buffer[128];
     char AddressString[128];
     struct sockaddr_in destinationAddress;
@@ -49,12 +58,15 @@ extern int8_t tcpClientInit(tsTcpClient *client);
 extern int8_t tcpClientConnect(tsTcpClient *client);
 extern int8_t tcpClientClose(tsTcpClient *client);
 extern int8_t tcpClientSend(tsTcpClient *client, const char *message);
+extern int8_t tcpClientConnected(tsTcpClient *client);
+extern int8_t tcpClientCheckConnectionStatus(tsTcpClient *client);
 
 #define TCP_CLIENT_CREATE(_name, _ip, _port) \
     tsTcpClient _name = {                    \
         _ip,                                 \
         _port,                               \
         0,                                   \
+        eSocketNotCreated,                   \
         "",                                  \
         "",                                  \
     };

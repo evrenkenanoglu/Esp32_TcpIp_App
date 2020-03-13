@@ -6,6 +6,7 @@
  */
 
 #include "device_adc.h"
+#include "esp_log.h"
 
 static esp_adc_cal_characteristics_t *adc_chars;
 #define DEFAULT_VREF    1100        //Use adc2_vref_to_gpio() to obtain a better estimate
@@ -32,11 +33,18 @@ uint32_t adcGetRaw(tsAdc *adc)
 
 uint32_t adcGetRawSampled(tsAdc *adc)
 {
+    adc->sensorResult = 0;
     for(int i=1; i<=adc->numberOfSamples; i++)
     {
         adc->sensorResult += adc1_get_raw(adc->channel);
     }
     return adc->sensorResult/adc->numberOfSamples;
+}
+
+uint32_t adcGetVoltage(tsAdc *adc)
+{
+    adc->sensorVoltageResult = esp_adc_cal_raw_to_voltage(adc->sensorResult, adc_chars);
+    return adc->sensorVoltageResult;
 }
 
 
