@@ -1,20 +1,20 @@
 {
     "project_name":       "bootloader",
-    "project_path":       "C:/ESP32/esp-idf/components/bootloader/subproject",
+    "project_path":       "C:/Users/kenanoglu/esp/esp-idf/components/bootloader/subproject",
     "build_dir":          "C:/ESP32/Esp32_TcpIp_App/build/bootloader",
     "config_file":        "C:/ESP32/Esp32_TcpIp_App/sdkconfig",
     "config_defaults":    "",
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
-    "git_revision":       "v4.2-dev-318-g605da33c3-dirty",
+    "git_revision":       "v4.3-dirty",
     "target":             "esp32",
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
     "monitor_toolprefix": "xtensa-esp32-elf-",
     "config_environment" : {
-        "COMPONENT_KCONFIGS" : "C:/ESP32/esp-idf/components/efuse/Kconfig;C:/ESP32/esp-idf/components/esp32/Kconfig;C:/ESP32/esp-idf/components/esp_common/Kconfig;C:/ESP32/esp-idf/components/log/Kconfig;C:/ESP32/esp-idf/components/spi_flash/Kconfig",
-        "COMPONENT_KCONFIGS_PROJBUILD" : "C:/ESP32/esp-idf/components/bootloader/Kconfig.projbuild;C:/ESP32/esp-idf/components/esptool_py/Kconfig.projbuild;C:/ESP32/esp-idf/components/partition_table/Kconfig.projbuild"
+        "COMPONENT_KCONFIGS" : "C:/Users/kenanoglu/esp/esp-idf/components/efuse/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/esp32/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/esp_common/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/esp_system/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/log/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/newlib/Kconfig;C:/Users/kenanoglu/esp/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "C:/Users/kenanoglu/esp/esp-idf/components/bootloader/Kconfig.projbuild;C:/Users/kenanoglu/esp/esp-idf/components/esptool_py/Kconfig.projbuild;C:/Users/kenanoglu/esp/esp-idf/components/partition_table/Kconfig.projbuild"
     },
-    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_rom", "esptool_py", "log", "main", "micro-ecc", "partition_table", "soc", "spi_flash", "xtensa", "" ],
-    "build_component_paths" : [ "C:/ESP32/esp-idf/components/bootloader", "C:/ESP32/esp-idf/components/bootloader_support", "C:/ESP32/esp-idf/components/efuse", "C:/ESP32/esp-idf/components/esp32", "C:/ESP32/esp-idf/components/esp_common", "C:/ESP32/esp-idf/components/esp_rom", "C:/ESP32/esp-idf/components/esptool_py", "C:/ESP32/esp-idf/components/log", "C:/ESP32/esp-idf/components/bootloader/subproject/main", "C:/ESP32/esp-idf/components/bootloader/subproject/components/micro-ecc", "C:/ESP32/esp-idf/components/partition_table", "C:/ESP32/esp-idf/components/soc", "C:/ESP32/esp-idf/components/spi_flash", "C:/ESP32/esp-idf/components/xtensa", "" ]
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32", "esp_common", "esp_hw_support", "esp_rom", "esp_system", "esptool_py", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "soc", "spi_flash", "xtensa", "" ],
+    "build_component_paths" : [ "C:/Users/kenanoglu/esp/esp-idf/components/bootloader", "C:/Users/kenanoglu/esp/esp-idf/components/bootloader_support", "C:/Users/kenanoglu/esp/esp-idf/components/efuse", "C:/Users/kenanoglu/esp/esp-idf/components/esp32", "C:/Users/kenanoglu/esp/esp-idf/components/esp_common", "C:/Users/kenanoglu/esp/esp-idf/components/esp_hw_support", "C:/Users/kenanoglu/esp/esp-idf/components/esp_rom", "C:/Users/kenanoglu/esp/esp-idf/components/esp_system", "C:/Users/kenanoglu/esp/esp-idf/components/esptool_py", "C:/Users/kenanoglu/esp/esp-idf/components/hal", "C:/Users/kenanoglu/esp/esp-idf/components/log", "C:/Users/kenanoglu/esp/esp-idf/components/bootloader/subproject/main", "C:/Users/kenanoglu/esp/esp-idf/components/bootloader/subproject/components/micro-ecc", "C:/Users/kenanoglu/esp/esp-idf/components/newlib", "C:/Users/kenanoglu/esp/esp-idf/components/partition_table", "C:/Users/kenanoglu/esp/esp-idf/components/soc", "C:/Users/kenanoglu/esp/esp-idf/components/spi_flash", "C:/Users/kenanoglu/esp/esp-idf/components/xtensa", "" ]
 }

@@ -1,4 +1,4 @@
-# Install script for directory: C:/ESP32/esp-idf/components/unity
+# Install script for directory: C:/Users/kenanoglu/esp/esp-idf/components/unity
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,4 +1,4 @@
-# Install script for directory: C:/ESP32/esp-idf/components/coap
+# Install script for directory: C:/Users/kenanoglu/esp/esp-idf/components/coap
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

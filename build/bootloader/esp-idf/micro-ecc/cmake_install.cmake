@@ -1,4 +1,4 @@
-# Install script for directory: C:/ESP32/esp-idf/components/bootloader/subproject/components/micro-ecc
+# Install script for directory: C:/Users/kenanoglu/esp/esp-idf/components/bootloader/subproject/components/micro-ecc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

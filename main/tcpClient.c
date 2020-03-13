@@ -23,14 +23,15 @@ int8_t tcpClientInit(tsTcpClient *client)
     inet_ntoa_r(client->destinationAddress.sin_addr, client->AddressString, sizeof(client->AddressString - 1));
     ESP_LOGI(clientTag, "Configuration Done!");
     
-    client->socket = socket(client->addressFamily, SOCK_STREAM, client->ipProtocol);
+    client->socket = socket(client->addressFamily, SOCK_STREAM, client->ipProtocol); // Socket Creating
     if(client->socket <0)
     {
         ESP_LOGE(clientTag, "Unable to create socket: errno %d", errno);
+        client->socketStatus = eSocketDisconnected;     // To create new healty socket, close first!
         return ESP_FAIL;
     }
     ESP_LOGI(clientTag, "Socket created, connecting to %s:%d", client->ipAddress, client->port);
-    client->socketStatus = eSocketNotConnected;
+    client->socketStatus = eSocketNotConnected;         // Socket created but not connected
 
     return ESP_OK;
 }
@@ -40,19 +41,14 @@ int8_t tcpClientConnect(tsTcpClient *client)
     if (!(client->socket < 0))
     {
         int err = connect(client->socket, (struct sockaddr *)&client->destinationAddress, sizeof(client->destinationAddress));
-        if (err != 0)
+        if (err != 0) // Connection Error 
         {
-            client->socketStatus = eSocketNotConnected;
             ESP_LOGE(clientTag, "Socket unable to connect: errno %d", errno);
-            if(errno == 128) // We have to init client again!
-            {
-                client->socketStatus = eSocketNotCreated;
-            }
+            client->socketStatus = eSocketDisconnected; // To create new Socket, close socket first
             return ESP_FAIL;
         }
         client->socketStatus = eSocketConnected;
         ESP_LOGI(clientTag, "Successfully connected");
-
     }
     else
     {
@@ -66,10 +62,10 @@ int8_t tcpClientSend(tsTcpClient *client, const char *message)
 {
 
     int err = send(client->socket, message, strlen(message), 0);
-    if (err < 0)
+    if (err < 0) 
     {
         ESP_LOGE(clientTag, "Error occurred during sending: errno %d", errno);
-        client->socketStatus = eSocketDisconnected;
+        client->socketStatus = eSocketDisconnected; // To create new Socket, close socket first
         return ESP_FAIL;
     }
     else
@@ -88,7 +84,7 @@ int8_t tcpClientReceive(tsTcpClient *client)
     if (lenght < 0)
     {
         ESP_LOGE(clientTag, "recv failed: errno %d", errno);
-        client->socketStatus = eSocketDisconnected;
+        client->socketStatus = eSocketDisconnected; // To create new Socket, close socket first
         return ESP_FAIL;
     }
     // Data received
@@ -110,6 +106,7 @@ int8_t tcpClientCheckConnectionStatus(tsTcpClient *client)
 int8_t tcpClientClose(tsTcpClient *client)
 {
     ESP_LOGE(clientTag, "Shutting down socket");
+    shutdown(client->socket, 0);
     close(client->socket); 
     client->socketStatus = eSocketNotCreated;
     return ESP_OK;   
