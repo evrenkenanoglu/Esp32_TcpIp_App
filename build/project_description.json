@@ -6,7 +6,11 @@
     "config_defaults":    "C:/ESP32/Esp32_TcpIp_App/sdkconfig.defaults",
     "app_elf":            "blink.elf",
     "app_bin":            "blink.bin",
+<<<<<<< HEAD
     "git_revision":       "v4.3-dirty",
+=======
+    "git_revision":       "v4.2-dev-318-g605da33c3",
+>>>>>>> 95d75d214c87e5c33c8bb8c81c5bdee4e6c07ce7
     "target":             "esp32",
     "phy_data_partition": "",
     "monitor_baud" :      "115200",
