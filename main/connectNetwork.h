@@ -31,7 +31,7 @@ typedef struct
 {
     char ssid[32];  
     char password[64];
-
+    wifi_config_t wifi_config;
 
 }connectNetwork;
 

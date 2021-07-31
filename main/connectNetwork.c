@@ -18,22 +18,26 @@
 
 #include <string.h>
 // #include "protocol_examples_commmon.h"
-#include "sdkconfig.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
 #include "esp_wifi_default.h"
+#include "sdkconfig.h"
 // #if CONFIG_EXAMPLE_CONNECT_ETHERNET
 // #include "esp_eth.h"
 // #endif
+#include "connectNetwork.h"
+#include "driver/gpio.h"
 #include "esp_log.h"
 #include "esp_netif.h"
-#include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "freertos/task.h"
 #include "lwip/err.h"
 #include "lwip/sys.h"
-#include "connectNetwork.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+
 
 #define GOT_IPV4_BIT BIT(0)
 #define GOT_IPV6_BIT BIT(1)
@@ -44,16 +48,17 @@
 #define CONNECTED_BITS (GOT_IPV4_BIT)
 #endif
 
+#define ARRAY_SIZE(_array) (sizeof(_array) / sizeof(_array[0]))
 static EventGroupHandle_t s_connect_event_group;
-static esp_ip4_addr_t s_ip_addr;
-static const char *s_connection_name;
-static esp_netif_t *s_example_esp_netif = NULL;
+static esp_ip4_addr_t     s_ip_addr;
+static const char*        s_connection_name;
+static esp_netif_t*       s_example_esp_netif = NULL;
 
 // #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
 // static esp_ip6_addr_t s_ipv6_addr;
 // #endif
 
-static const char *TAG = "connect";
+static const char* TAG = "connect";
 
 /* set up connection, Wi-Fi or Ethernet */
 static void start(void);
@@ -61,15 +66,13 @@ static void start(void);
 /* tear down connection, release resources */
 static void stop(void);
 
-static void on_got_ip(void *arg, esp_event_base_t event_base,
-                      int32_t event_id, void *event_data)
+static void on_got_ip(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
     ESP_LOGI(TAG, "Got IP event!");
-    ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+    ip_event_got_ip_t* event = (ip_event_got_ip_t*)event_data;
     memcpy(&s_ip_addr, &event->ip_info.ip, sizeof(s_ip_addr));
     xEventGroupSetBits(s_connect_event_group, GOT_IPV4_BIT);
 }
-
 
 // #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
 
@@ -84,12 +87,28 @@ static void on_got_ip(void *arg, esp_event_base_t event_base,
 
 // #endif // CONFIG_EXAMPLE_CONNECT_IPV6
 
-
-uint8_t connectNet(const char *ssid,const char *password) 
+uint8_t connectNet(const char* ssid, const char* password)
 {
     printf("Getting SSID&PASS...\n");
-    strcpy(params.ssid, ssid);
-    strcpy(params.password, password);
+    // strcpy(params.ssid, ssid);
+    // strcpy(params.password, password);
+    // memcpy(params.wifi_config.sta.ssid, (uint8_t*)ssid, sizeof(params.wifi_config.sta.ssid));
+    // memcpy(params.wifi_config.sta.password, (uint8_t*)password, sizeof(params.wifi_config.sta.password));
+       
+       
+    for(int i=0; i<ARRAY_SIZE(params.wifi_config.sta.ssid); i++)
+    {
+        params.wifi_config.sta.ssid[i] = (uint8_t)ssid[i];
+        printf("%d->%d - %c\n",i, params.wifi_config.sta.ssid[i], (char)params.wifi_config.sta.ssid[i]);
+    }
+    printf("SIZE OF ARRAY SSID: %d", (sizeof ssid / sizeof(char)));
+    for(int i=0; i<ARRAY_SIZE(params.wifi_config.sta.password); i++)
+    {
+        params.wifi_config.sta.password[i] = (uint8_t)password[i];
+        printf("%d->%d - %c\n",i, params.wifi_config.sta.password[i], (char)params.wifi_config.sta.password[i]);
+    }
+    printf("SSID: %s", params.wifi_config.sta.ssid);
+    printf("PASSWORD: %s", params.wifi_config.sta.password);
     printf("Getting SSID&PASS DONE!\n");
 
     ESP_ERROR_CHECK(connectFunc());
@@ -98,31 +117,33 @@ uint8_t connectNet(const char *ssid,const char *password)
 
 esp_err_t connectFunc(void)
 {
-    //printf("Starting Connection...!\n");
-    
-    if (s_connect_event_group != NULL) {
+    // printf("Starting Connection...!\n");
+
+    if (s_connect_event_group != NULL)
+    {
         return ESP_ERR_INVALID_STATE;
     }
     s_connect_event_group = xEventGroupCreate();
     start();
     ESP_ERROR_CHECK(esp_register_shutdown_handler(&stop));
     ESP_LOGI(TAG, "Waiting for IP");
-    //printf("Waiting for IP\n");
+    // printf("Waiting for IP\n");
     xEventGroupWaitBits(s_connect_event_group, CONNECTED_BITS, true, true, portMAX_DELAY);
     ESP_LOGI(TAG, "Connected to %s", s_connection_name);
     ESP_LOGI(TAG, "IPv4 address: " IPSTR, IP2STR(&s_ip_addr));
 
-    //printf("Connected to %s \n", s_connection_name);
-    //printf("IPV4 address: %d.%d.%d.%d \n", IP2STR(&s_ip_addr));
-// #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
-//     ESP_LOGI(TAG, "IPv6 address: " IPV6STR, IPV62STR(s_ipv6_addr));
-// #endif
+    // printf("Connected to %s \n", s_connection_name);
+    // printf("IPV4 address: %d.%d.%d.%d \n", IP2STR(&s_ip_addr));
+    // #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
+    //     ESP_LOGI(TAG, "IPv6 address: " IPV6STR, IPV62STR(s_ipv6_addr));
+    // #endif
     return ESP_OK;
 }
 
 esp_err_t example_disconnect(void)
 {
-    if (s_connect_event_group == NULL) {
+    if (s_connect_event_group == NULL)
+    {
         return ESP_ERR_INVALID_STATE;
     }
     vEventGroupDelete(s_connect_event_group);
@@ -135,13 +156,13 @@ esp_err_t example_disconnect(void)
 
 #ifdef CONFIG_EXAMPLE_CONNECT_WIFI
 
-static void on_wifi_disconnect(void *arg, esp_event_base_t event_base,
-                               int32_t event_id, void *event_data)
+static void on_wifi_disconnect(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
-    //printf("Wi-Fi disconnected, trying to reconnect...\n");
+    // printf("Wi-Fi disconnected, trying to reconnect...\n");
     ESP_LOGI(TAG, "Wi-Fi disconnected, trying to reconnect...");
     esp_err_t err = esp_wifi_connect();
-    if (err == ESP_ERR_WIFI_NOT_STARTED) {
+    if (err == ESP_ERR_WIFI_NOT_STARTED)
+    {
         return;
     }
     ESP_ERROR_CHECK(err);
@@ -149,11 +170,7 @@ static void on_wifi_disconnect(void *arg, esp_event_base_t event_base,
 
 #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
 
-static void on_wifi_connect(void *esp_netif, esp_event_base_t event_base,
-                            int32_t event_id, void *event_data)
-{
-    esp_netif_create_ip6_linklocal(esp_netif);
-}
+static void on_wifi_connect(void* esp_netif, esp_event_base_t event_base, int32_t event_id, void* event_data) { esp_netif_create_ip6_linklocal(esp_netif); }
 
 #endif // CONFIG_EXAMPLE_CONNECT_IPV6
 
@@ -164,7 +181,7 @@ static void start(void)
 
     esp_netif_config_t netif_config = ESP_NETIF_DEFAULT_WIFI_STA();
 
-    esp_netif_t *netif = esp_netif_new(&netif_config);
+    esp_netif_t* netif = esp_netif_new(&netif_config);
 
     assert(netif);
 
@@ -181,21 +198,20 @@ static void start(void)
 #endif
 
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = "EvrenKenanoglu", 
-            .password = "12345678",
-        },
-    };
-    ESP_LOGI(TAG, "Connecting to %s...", wifi_config.sta.ssid);
-    //printf("Connecting to %s...", wifi_config.sta.ssid);
+    // wifi_config_t wifi_config;//  {.sta = {.ssid = "EvrenKenanoglu", .password = "12345678"}};
+
+    // memcpy(wifi_config.sta.ssid, (uint8_t*)params.ssid, sizeof(params.ssid));
+
+    // memcpy(wifi_config.sta.password, (uint8_t*)params.password, sizeof(params.password));
+
+    ESP_LOGI(TAG, "Connecting to %s...", params.wifi_config.sta.ssid);
+    // printf("Connecting to %s...", wifi_config.sta.ssid);
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &params.wifi_config));
     ESP_ERROR_CHECK(esp_wifi_start());
     ESP_ERROR_CHECK(esp_wifi_connect());
     s_connection_name = params.ssid;
-
 }
 
 static void stop(void)
@@ -207,7 +223,8 @@ static void stop(void)
     ESP_ERROR_CHECK(esp_event_handler_unregister(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &on_wifi_connect));
 #endif
     esp_err_t err = esp_wifi_stop();
-    if (err == ESP_ERR_WIFI_NOT_INIT) {
+    if (err == ESP_ERR_WIFI_NOT_INIT)
+    {
         return;
     }
     ESP_ERROR_CHECK(err);
@@ -218,36 +235,35 @@ static void stop(void)
 }
 #endif // CONFIG_EXAMPLE_CONNECT_WIFI
 
-
 #ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
 
 #ifdef CONFIG_EXAMPLE_CONNECT_IPV6
 
 /** Event handler for Ethernet events */
-static void on_eth_event(void *esp_netif, esp_event_base_t event_base,
-                         int32_t event_id, void *event_data)
+static void on_eth_event(void* esp_netif, esp_event_base_t event_base, int32_t event_id, void* event_data)
 {
-    switch (event_id) {
-    case ETHERNET_EVENT_CONNECTED:
-        ESP_LOGI(TAG, "Ethernet Link Up");
-        esp_netif_create_ip6_linklocal(esp_netif);
-        break;
-    default:
-        break;
+    switch (event_id)
+    {
+        case ETHERNET_EVENT_CONNECTED:
+            ESP_LOGI(TAG, "Ethernet Link Up");
+            esp_netif_create_ip6_linklocal(esp_netif);
+            break;
+        default:
+            break;
     }
 }
 
 #endif // CONFIG_EXAMPLE_CONNECT_IPV6
 
 static esp_eth_handle_t s_eth_handle = NULL;
-static esp_eth_mac_t *s_mac = NULL;
-static esp_eth_phy_t *s_phy = NULL;
-static void *s_eth_glue = NULL;
+static esp_eth_mac_t*   s_mac        = NULL;
+static esp_eth_phy_t*   s_phy        = NULL;
+static void*            s_eth_glue   = NULL;
 
 static void start(void)
 {
     esp_netif_config_t netif_config = ESP_NETIF_DEFAULT_ETH();
-    esp_netif_t *netif = esp_netif_new(&netif_config);
+    esp_netif_t*       netif        = esp_netif_new(&netif_config);
     assert(netif);
     s_example_esp_netif = netif;
     // Set default handlers to process TCP/IP stuffs
@@ -260,12 +276,12 @@ static void start(void)
 #endif
     eth_mac_config_t mac_config = ETH_MAC_DEFAULT_CONFIG();
     eth_phy_config_t phy_config = ETH_PHY_DEFAULT_CONFIG();
-    phy_config.phy_addr = CONFIG_EXAMPLE_ETH_PHY_ADDR;
-    phy_config.reset_gpio_num = CONFIG_EXAMPLE_ETH_PHY_RST_GPIO;
+    phy_config.phy_addr         = CONFIG_EXAMPLE_ETH_PHY_ADDR;
+    phy_config.reset_gpio_num   = CONFIG_EXAMPLE_ETH_PHY_RST_GPIO;
 #if CONFIG_EXAMPLE_USE_INTERNAL_ETHERNET
-    mac_config.smi_mdc_gpio_num = CONFIG_EXAMPLE_ETH_MDC_GPIO;
+    mac_config.smi_mdc_gpio_num  = CONFIG_EXAMPLE_ETH_MDC_GPIO;
     mac_config.smi_mdio_gpio_num = CONFIG_EXAMPLE_ETH_MDIO_GPIO;
-    s_mac = esp_eth_mac_new_esp32(&mac_config);
+    s_mac                        = esp_eth_mac_new_esp32(&mac_config);
 #if CONFIG_EXAMPLE_ETH_PHY_IP101
     s_phy = esp_eth_phy_new_ip101(&phy_config);
 #elif CONFIG_EXAMPLE_ETH_PHY_RTL8201
@@ -278,32 +294,26 @@ static void start(void)
 #elif CONFIG_EXAMPLE_USE_DM9051
     gpio_install_isr_service(0);
     spi_device_handle_t spi_handle = NULL;
-    spi_bus_config_t buscfg = {
-        .miso_io_num = CONFIG_EXAMPLE_DM9051_MISO_GPIO,
-        .mosi_io_num = CONFIG_EXAMPLE_DM9051_MOSI_GPIO,
-        .sclk_io_num = CONFIG_EXAMPLE_DM9051_SCLK_GPIO,
+    spi_bus_config_t    buscfg     = {
+        .miso_io_num   = CONFIG_EXAMPLE_DM9051_MISO_GPIO,
+        .mosi_io_num   = CONFIG_EXAMPLE_DM9051_MOSI_GPIO,
+        .sclk_io_num   = CONFIG_EXAMPLE_DM9051_SCLK_GPIO,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
     };
     ESP_ERROR_CHECK(spi_bus_initialize(CONFIG_EXAMPLE_DM9051_SPI_HOST, &buscfg, 1));
     spi_device_interface_config_t devcfg = {
-        .command_bits = 1,
-        .address_bits = 7,
-        .mode = 0,
-        .clock_speed_hz = CONFIG_EXAMPLE_DM9051_SPI_CLOCK_MHZ * 1000 * 1000,
-        .spics_io_num = CONFIG_EXAMPLE_DM9051_CS_GPIO,
-        .queue_size = 20
-    };
+        .command_bits = 1, .address_bits = 7, .mode = 0, .clock_speed_hz = CONFIG_EXAMPLE_DM9051_SPI_CLOCK_MHZ * 1000 * 1000, .spics_io_num = CONFIG_EXAMPLE_DM9051_CS_GPIO, .queue_size = 20};
     ESP_ERROR_CHECK(spi_bus_add_device(CONFIG_EXAMPLE_DM9051_SPI_HOST, &devcfg, &spi_handle));
     /* dm9051 ethernet driver is based on spi driver */
     eth_dm9051_config_t dm9051_config = ETH_DM9051_DEFAULT_CONFIG(spi_handle);
-    dm9051_config.int_gpio_num = CONFIG_EXAMPLE_DM9051_INT_GPIO;
-    s_mac = esp_eth_mac_new_dm9051(&dm9051_config, &mac_config);
-    s_phy = esp_eth_phy_new_dm9051(&phy_config);
+    dm9051_config.int_gpio_num        = CONFIG_EXAMPLE_DM9051_INT_GPIO;
+    s_mac                             = esp_eth_mac_new_dm9051(&dm9051_config, &mac_config);
+    s_phy                             = esp_eth_phy_new_dm9051(&phy_config);
 #elif CONFIG_EXAMPLE_USE_OPENETH
     phy_config.autonego_timeout_ms = 100;
-    s_mac = esp_eth_mac_new_openeth(&mac_config);
-    s_phy = esp_eth_phy_new_dp83848(&phy_config);
+    s_mac                          = esp_eth_mac_new_openeth(&mac_config);
+    s_phy                          = esp_eth_phy_new_dp83848(&phy_config);
 #endif
 
     // Install Ethernet driver
@@ -336,8 +346,4 @@ static void stop(void)
 
 #endif // CONFIG_EXAMPLE_CONNECT_ETHERNET
 
-
-esp_netif_t *get_example_netif(void)
-{
-    return s_example_esp_netif;
-}
+esp_netif_t* get_example_netif(void) { return s_example_esp_netif; }

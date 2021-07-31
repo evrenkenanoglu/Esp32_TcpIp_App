@@ -90,6 +90,7 @@ uint8_t connectNet(const char *ssid,const char *password)
     printf("Getting SSID&PASS...\n");
     strcpy(params.ssid, ssid);
     strcpy(params.password, password);
+
     printf("Getting SSID&PASS DONE!\n");
 
     ESP_ERROR_CHECK(connectFunc());
